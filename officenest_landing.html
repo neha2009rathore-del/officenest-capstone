@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OfficeNest — Verified Sustainable Procurement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#090D13;
+    --surface:#10151D;
+    --surface-2:#151B25;
+    --border:#232B38;
+    --text:#E9EDF3;
+    --text-dim:#8B94A6;
+    --teal:#19C6B0;
+    --teal-dim:rgba(25,198,176,0.12);
+    --indigo:#5B7CFA;
+    --verified:#3ECF8E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:'Inter',sans-serif;overflow-x:hidden;cursor:none;
+  }
+  ::selection{background:var(--teal);color:#04110F;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:600;line-height:1.08;letter-spacing:-0.01em;}
+  .mono{font-family:'JetBrains Mono',monospace;letter-spacing:0.02em;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+  section{position:relative;}
+
+  /* ---------- cursor: smoothed reticle ---------- */
+  #cur-ring{
+    position:fixed;top:0;left:0;width:26px;height:26px;border-radius:50%;
+    border:1px solid rgba(233,237,243,0.45);pointer-events:none;z-index:9999;
+    transform:translate(-50%,-50%);transition:width .2s ease,height .2s ease,border-color .2s ease;
+  }
+  #cur-ring::before,#cur-ring::after{
+    content:"";position:absolute;background:rgba(233,237,243,0.45);transition:background .2s ease;
+  }
+  #cur-ring::before{top:50%;left:-6px;width:4px;height:1px;transform:translateY(-50%);}
+  #cur-ring::after{top:50%;right:-6px;width:4px;height:1px;transform:translateY(-50%);}
+  #cur-dot{
+    position:fixed;top:0;left:0;width:4px;height:4px;border-radius:50%;
+    background:var(--teal);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);
+  }
+  .cursor-grow #cur-ring{width:52px;height:52px;border-color:var(--teal);}
+  .cursor-grow #cur-ring::before,.cursor-grow #cur-ring::after{background:var(--teal);}
+  @media(hover:none){#cur-ring,#cur-dot{display:none;}body{cursor:auto;}}
+
+  /* ---------- nav ---------- */
+  nav{position:sticky;top:0;z-index:100;background:rgba(9,13,19,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:74px;}
+  .logo{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;display:flex;align-items:center;gap:8px;}
+  .logo .dot{width:8px;height:8px;border-radius:2px;background:var(--teal);}
+  .nav-links{display:flex;gap:34px;}
+  .nav-links a{font-size:14px;color:var(--text-dim);transition:color .2s;}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{background:var(--teal);color:#04110F;padding:10px 20px;border-radius:6px;font-size:14px;font-weight:600;}
+  .nav-cta:hover{background:#2adcc4;}
+  .hamburger{display:none;flex-direction:column;gap:5px;}
+  .hamburger span{width:20px;height:2px;background:var(--text);}
+
+  /* ---------- hero ---------- */
+  .hero{padding:100px 0 90px;border-bottom:1px solid var(--border);}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--teal);
+    background:var(--teal-dim);border:1px solid rgba(25,198,176,0.3);
+    padding:6px 12px;border-radius:20px;margin-bottom:24px;
+  }
+  .eyebrow .pulse{width:6px;height:6px;border-radius:50%;background:var(--verified);position:relative;}
+  .eyebrow .pulse::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--verified);animation:pulse 1.8s ease-out infinite;}
+  @keyframes pulse{0%{transform:scale(0.6);opacity:1;}100%{transform:scale(1.8);opacity:0;}}
+  .hero h1{font-size:52px;margin-bottom:22px;}
+  .hero h1 span{color:var(--teal);}
+  .hero p.lead{font-size:16.5px;color:var(--text-dim);max-width:470px;margin-bottom:34px;line-height:1.65;}
+  .cta-row{display:flex;gap:14px;margin-bottom:52px;}
+  .btn-primary{background:var(--teal);color:#04110F;padding:14px 26px;border-radius:6px;font-size:14.5px;font-weight:600;transition:background .2s,transform .2s;}
+  .btn-primary:hover{background:#2adcc4;transform:translateY(-2px);}
+  .btn-outline{padding:14px 26px;border-radius:6px;font-size:14.5px;font-weight:600;border:1px solid var(--border);color:var(--text);transition:border-color .2s;}
+  .btn-outline:hover{border-color:var(--text-dim);}
+  .stat-strip{display:flex;gap:36px;flex-wrap:wrap;}
+  .stat b{display:block;font-family:'Space Grotesk',sans-serif;font-size:24px;color:var(--text);}
+  .stat span{font-size:11px;color:var(--text-dim);}
+
+  /* ---------- verification certificate: signature element ---------- */
+  .cert{
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:26px;position:relative;overflow:hidden;
+    box-shadow:0 40px 80px rgba(0,0,0,0.45);
+  }
+  .cert-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+  .cert-head .mono{font-size:11px;color:var(--text-dim);}
+  .cert-badge{
+    width:34px;height:34px;border-radius:50%;border:1px solid var(--teal);
+    display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:14px;
+  }
+  .cert-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:13.5px;}
+  .cert-row:last-of-type{border-bottom:none;}
+  .cert-row .check{color:var(--verified);font-size:13px;margin-left:8px;}
+  .cert-status{
+    margin-top:18px;background:rgba(62,207,142,0.1);border:1px solid rgba(62,207,142,0.35);
+    color:var(--verified);font-size:12px;font-weight:600;text-align:center;padding:10px;border-radius:8px;
+    letter-spacing:.03em;
+  }
+  .scan-line{
+    position:absolute;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--teal),transparent);
+    box-shadow:0 0 12px var(--teal);
+    animation:scan 3.2s ease-in-out infinite;
+  }
+  @keyframes scan{0%{top:6%;opacity:0;}10%{opacity:1;}50%{top:92%;opacity:1;}60%{opacity:0;}100%{top:92%;opacity:0;}}
+
+  /* ---------- trust strip ---------- */
+  .trust-strip{padding:36px 0;border-bottom:1px solid var(--border);}
+  .trust-strip .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+  .trust-strip .mono{font-size:11px;color:var(--text-dim);}
+  .trust-badges{display:flex;gap:28px;flex-wrap:wrap;}
+  .trust-badge{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);}
+  .trust-badge .tick{width:16px;height:16px;border-radius:50%;background:var(--teal-dim);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;}
+
+  /* ---------- steps ---------- */
+  .steps{padding:100px 0;border-bottom:1px solid var(--border);}
+  .section-head{text-align:center;max-width:560px;margin:0 auto 60px;}
+  .section-head .eyebrow{margin:0 auto 20px;}
+  .section-head h2{font-size:36px;margin-bottom:14px;}
+  .section-head p{color:var(--text-dim);font-size:15px;}
+  .step-row{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:26px 20px;transition:border-color .2s,transform .2s;}
+  .step:hover{border-color:var(--teal);transform:translateY(-4px);}
+  .step-num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--teal);margin-bottom:16px;}
+  .step h3{font-size:16px;margin-bottom:8px;}
+  .step p{font-size:13px;color:var(--text-dim);line-height:1.55;}
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ---------- products ---------- */
+  .products{padding:100px 0;border-bottom:1px solid var(--border);}
+  .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .prod-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .25s,transform .25s;}
+  .prod-card:hover{border-color:var(--teal);transform:translateY(-6px);}
+  .prod-img{height:120px;background:linear-gradient(135deg,var(--surface-2),var(--border));position:relative;}
+  .prod-img::after{content:"✓";position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;background:rgba(62,207,142,0.12);color:var(--verified);font-size:12px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(62,207,142,0.3);}
+  .prod-body{padding:18px;}
+  .prod-body .cat{font-size:10px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+  .prod-body h3{font-size:15px;margin-bottom:6px;font-weight:600;}
+  .prod-body p{font-size:12px;color:var(--text-dim);margin-bottom:14px;line-height:1.5;}
+  .prod-price{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;}
+  .prod-price b{font-family:'JetBrains Mono',monospace;color:var(--text);}
+  .prod-link{color:var(--teal);}
+
+  /* ---------- cta band ---------- */
+  .cta-band{padding:90px 0;text-align:center;background:var(--surface);}
+  .cta-band h2{font-size:32px;margin-bottom:20px;}
+  .cta-band p{color:var(--text-dim);margin-bottom:32px;}
+  .cta-band .cta-row{justify-content:center;margin-bottom:0;}
+
+  /* ---------- footer ---------- */
+  footer{padding:64px 0 36px;}
+  .foot-grid{display:grid;grid-template-columns:1.3fr repeat(3,1fr);gap:36px;margin-bottom:44px;}
+  .foot-col h4{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);text-transform:uppercase;margin-bottom:16px;letter-spacing:.05em;}
+  .foot-col a{display:block;font-size:13px;color:var(--text);margin-bottom:10px;opacity:.8;}
+  .foot-col a:hover{opacity:1;color:var(--teal);}
+  .foot-bottom{display:flex;justify-content:space-between;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim);flex-wrap:wrap;gap:10px;}
+
+  @media(max-width:900px){
+    .hero .wrap{grid-template-columns:1fr;}
+    .hero h1{font-size:36px;}
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .step-row{grid-template-columns:1fr 1fr;}
+    .prod-grid{grid-template-columns:1fr 1fr;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    .trust-strip .wrap{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="logo"><span class="dot"></span>OfficeNest</div>
+    <div class="nav-links">
+      <a href="#" class="hoverable">Products</a>
+      <a href="#" class="hoverable">Solutions</a>
+      <a href="#" class="hoverable">Pricing</a>
+      <a href="#" class="hoverable">About</a>
+      <a href="#" class="hoverable">Contact</a>
+    </div>
+    <a href="#" class="nav-cta hoverable">Get a Quote</a>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow"><span class="pulse"></span>Verified supplier network — audited quarterly</div>
+      <h1>Procurement your <span>compliance team</span> will actually approve.</h1>
+      <p class="lead">OfficeNest sources sustainable office supplies and corporate gifts for growing companies — every vendor vetted, every order invoiced, every shipment tracked.</p>
+      <div class="cta-row">
+        <a href="#" class="btn-primary hoverable">Get a Quote</a>
+        <a href="#" class="btn-outline hoverable">Book a Demo</a>
+      </div>
+      <div class="stat-strip">
+        <div class="stat"><b>500+</b><span class="mono">COMPANIES SERVICED</span></div>
+        <div class="stat"><b>50K+</b><span class="mono">ORDERS FULFILLED</span></div>
+        <div class="stat"><b>99.2%</b><span class="mono">ON-TIME DELIVERY</span></div>
+        <div class="stat"><b>24HR</b><span class="mono">QUOTE TURNAROUND</span></div>
+      </div>
+    </div>
+
+    <div class="cert reveal">
+      <div class="scan-line"></div>
+      <div class="cert-head">
+        <span class="mono">VENDOR-VERIFICATION · #OFN-2291</span>
+        <div class="cert-badge">✓</div>
+      </div>
+      <div class="cert-row"><span>Sustainability audit</span><span>Passed<span class="check">✓</span></span></div>
+      <div class="cert-row"><span>Bulk pricing review</span><span>Confirmed<span class="check">✓</span></span></div>
+      <div class="cert-row"><span>Delivery SLA</span><span>Guaranteed<span class="check">✓</span></span></div>
+      <div class="cert-row"><span>Invoice compliance</span><span>Certified<span class="check">✓</span></span></div>
+      <div class="cert-status">STATUS: VERIFIED SUPPLIER</div>
+    </div>
+  </div>
+</section>
+
+<section class="trust-strip">
+  <div class="wrap">
+    <span class="mono">TRUSTED BY PROCUREMENT TEAMS AT</span>
+    <div class="trust-badges">
+      <div class="trust-badge"><span class="tick">✓</span>ISO-aligned sourcing</div>
+      <div class="trust-badge"><span class="tick">✓</span>Carbon-tracked shipping</div>
+      <div class="trust-badge"><span class="tick">✓</span>GST-compliant invoicing</div>
+      <div class="trust-badge"><span class="tick">✓</span>SLA-backed delivery</div>
+    </div>
+  </div>
+</section>
+
+<section class="steps">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" style="margin:0 auto 20px;justify-content:center;"><span class="pulse"></span>Process</div>
+      <h2>From enquiry to delivery, verified at every step.</h2>
+    </div>
+    <div class="step-row">
+      <div class="step reveal"><div class="step-num">STEP 01</div><h3>Submit your requirement</h3><p>Share team size, occasion, or a supply list via quote form or a call.</p></div>
+      <div class="step reveal"><div class="step-num">STEP 02</div><h3>We curate & verify</h3><p>Vendors are checked against sustainability and pricing standards.</p></div>
+      <div class="step reveal"><div class="step-num">STEP 03</div><h3>Approve & get invoiced</h3><p>Review the quote, approve it, and receive a compliant invoice.</p></div>
+      <div class="step reveal"><div class="step-num">STEP 04</div><h3>Tracked bulk delivery</h3><p>Your order ships with real-time tracking and an SLA guarantee.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="products">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" style="margin:0 auto 20px;justify-content:center;"><span class="pulse"></span>Catalog</div>
+      <h2>Supplies and gifting, sourced responsibly.</h2>
+    </div>
+    <div class="prod-grid">
+      <div class="prod-card reveal">
+        <div class="prod-img"></div>
+        <div class="prod-body">
+          <div class="cat">Office Supplies</div>
+          <h3>Recycled Stationery Set</h3>
+          <p>Notebooks, pens, and folders made from 100% recycled materials.</p>
+          <div class="prod-price"><b>from ₹450</b><span class="prod-link hoverable">Get quote →</span></div>
+        </div>
+      </div>
+      <div class="prod-card reveal">
+        <div class="prod-img"></div>
+        <div class="prod-body">
+          <div class="cat">Office Supplies</div>
+          <h3>Bamboo Desk Organizer</h3>
+          <p>Modular desk organization crafted from sustainably farmed bamboo.</p>
+          <div class="prod-price"><b>from ₹800</b><span class="prod-link hoverable">Get quote →</span></div>
+        </div>
+      </div>
+      <div class="prod-card reveal">
+        <div class="prod-img"></div>
+        <div class="prod-body">
+          <div class="cat">Corporate Gifting</div>
+          <h3>Onboarding Gift Box</h3>
+          <p>A curated welcome kit for new hires — notebook, bottle, and card.</p>
+          <div class="prod-price"><b>from ₹1,200</b><span class="prod-link hoverable">Get quote →</span></div>
+        </div>
+      </div>
+      <div class="prod-card reveal">
+        <div class="prod-img"></div>
+        <div class="prod-body">
+          <div class="cat">Corporate Gifting</div>
+          <h3>Client Appreciation Set</h3>
+          <p>A refined gift set for client relationships that matter.</p>
+          <div class="prod-price"><b>from ₹1,600</b><span class="prod-link hoverable">Get quote →</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap reveal">
+    <h2>Ready for procurement that passes every audit?</h2>
+    <p>Get a custom quote back within 24 hours.</p>
+    <div class="cta-row">
+      <a href="#" class="btn-primary hoverable">Get a Quote</a>
+      <a href="#" class="btn-outline hoverable">Schedule a Call</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <div class="logo"><span class="dot"></span>OfficeNest</div>
+        <p style="font-size:13px;color:var(--text-dim);margin-top:14px;max-width:220px;">Verified, sustainable procurement for growing businesses.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Products</h4>
+        <a href="#" class="hoverable">Office Supplies</a>
+        <a href="#" class="hoverable">Corporate Gifting</a>
+        <a href="#" class="hoverable">Bulk Orders</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="#" class="hoverable">About Us</a>
+        <a href="#" class="hoverable">Solutions</a>
+        <a href="#" class="hoverable">Resources</a>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <a href="#" class="hoverable">hello@officenest.co</a>
+        <a href="#" class="hoverable">+91 98765 43210</a>
+        <a href="#" class="hoverable">Schedule a Call</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 OfficeNest. All rights reserved.</span>
+      <span class="mono">VERIFIED SUPPLIER · AUDITED QUARTERLY</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // smoothed cursor (lerp) instead of instant jump
+  const ring = document.getElementById('cur-ring');
+  const dot = document.getElementById('cur-dot');
+  let mx=0,my=0,rx=0,ry=0;
+  window.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
+  function loop(){
+    rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(loop);
+  }
+  loop();
+  document.querySelectorAll('.hoverable').forEach(el=>{
+    el.addEventListener('mouseenter', ()=>document.body.classList.add('cursor-grow'));
+    el.addEventListener('mouseleave', ()=>document.body.classList.remove('cursor-grow'));
+  });
+
+  // scroll reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  },{threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>
